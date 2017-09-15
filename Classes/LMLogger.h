@@ -12,43 +12,33 @@ typedef enum : NSUInteger
 {
     LogLevelVerbose,
     LogLevelDebug,
-    LogLevelInfoDev,
     LogLevelInfo,
     LogLevelWarn,
     LogLevelError
 } LogLevel;
 
-typedef enum : NSUInteger {
-    LogFilePolicyNoLogFile,
-    LogFilePolicyPerDay,
-    LogFilePolicyPerLaunch,
-} LogFilePolicy;
-
 @interface LogConfig : NSObject
 
-@property (nonatomic, strong) NSString *dir;                       // log文件目录
-@property (nonatomic, assign) LogFilePolicy policy;                // log文件策略
-@property (nonatomic, assign) LogLevel outputLevel;                // 输出级别，大于等于此级别的log才会输出
-@property (nonatomic, assign) LogLevel fileLevel;                  // 输出到文件的级别，大于等于此级别的log才会写入文件
-@property (nonatomic, assign) BOOL consoleOutput;                  // 是否输出到控制台,@default = YES
+@property (nonatomic, strong) NSString *dir;             // log文件目录,请采用单独的路径，不要和其它文件放一起,一般不用设置，logger会采用默认路径。
+@property (nonatomic, assign) LogLevel logLevel;         // 日志级别，大于等于此级别的log才会被记录
+@property (nonatomic, assign) BOOL consoleOutput;        // 是否输出到控制台,@default = YES
 
 @end
 
 @interface LMLogger : NSObject
 
-+ (void)enableCrashLog;
-
-+ (void)config:(LogConfig *)cfg;
+/**
+ * 打开日志功能,在- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions打开。
+ */
++ (void)openLogger:(LogConfig *)cfg;
+/**
+ * 关闭日志功能，请在- (void)applicationWillTerminate:(UIApplication *)application 中调用。
+ */
++ (void)closeLogger;
 
 + (LogConfig *)getConfig;
 
 + (LMLogger *)getLMLogger:(NSString *)tag;
-
-+ (NSString *)logFilePath;
-
-+ (NSArray *)sortedLogFileArray;
-
-+ (NSString *)logFileDir;
 
 + (void)log:(NSString *)tag level:(LogLevel)level message:(NSString *)format, ...NS_FORMAT_FUNCTION(3, 4);
 
@@ -61,8 +51,6 @@ typedef enum : NSUInteger {
 + (void)warn:(NSString *)tag message:(NSString *)format, ...NS_FORMAT_FUNCTION(2, 3);
 
 + (void)error:(NSString *)tag message:(NSString *)format, ...NS_FORMAT_FUNCTION(2, 3);
-
-+ (void)cleanLogFiles;
 
 - (void)log:(LogLevel)level message:(NSString *)format, ...NS_FORMAT_FUNCTION(2, 3);
 
@@ -77,52 +65,6 @@ typedef enum : NSUInteger {
 - (void)error:(NSString *)format, ...NS_FORMAT_FUNCTION(1, 2);
 
 @end
-
-@interface LMLogger (fileUpload)
-
-+ (NSArray*)filePathsFromBeginDate:(NSDate*)begin endDate:(NSDate*)date fromDir:(NSString *)dirPath;
-
-+ (BOOL)perLaunchLogsWriteToPerDayLogWithFilepaths:(NSArray *)filePaths toDir:(NSString *)destinationDirPath;
-
-@end
-
-#define SPACE
-#define doLog(name, format, arg...)\
-{\
-NSString* newFormat = [NSString stringWithFormat:@"[func:%s,line:%d]:%@%@", __func__, __LINE__, @"%@", format];\
-newFormat = [NSString stringWithFormat:newFormat, @"", ##arg];\
-_log_##name(newFormat);\
-}
-
-#define logVerbose(format, arg...) doLog( verbose, format, ##arg)
-NS_INLINE void _log_verbose(NSString* log)
-{
-    [LMLogger verbose:@"" message:@"%@", log];
-}
-
-#define logDebug(format, arg...) doLog(debug, format, ##arg)
-NS_INLINE void _log_debug(NSString* log)
-{
-    [LMLogger debug:@"" message:@"%@", log];
-}
-
-#define logInfo(format, arg...) doLog(info, format, ##arg)
-NS_INLINE void _log_info(NSString* log)
-{
-    [LMLogger info:@"" message:@"%@", log];
-}
-
-#define logWarning(format, arg...) doLog(warn, format, ##arg)
-NS_INLINE void _log_warn(NSString* log)
-{
-    [LMLogger warn:@"" message:@"%@", log];
-}
-
-#define logError(format, arg...) doLog(error, format, ##arg)
-NS_INLINE void _log_error(NSString* log)
-{
-    [LMLogger error:@"" message:@"%@", log];
-}
 
 //非类形式的另一个打Log函数，为方便使用
 #define LogVerbose(tag, format, arg...)  [LMLogger verbose:tag message:format, ##arg]

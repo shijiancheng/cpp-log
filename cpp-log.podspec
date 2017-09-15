@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
   cpp-log 0.0.1
   DESC
-  s.author       = { "shadow magic" => "shadowmagic@163.com" }
+  s.author       = { "shadow magic" => "shadowmagic@yeah.net" }
   s.homepage     = 'https://www.wikipedia.org'
   s.source       = { :git => "https://github.com/shijiancheng/cpp-log.git", :tag => s.version.to_s }
   s.source_files = 'Classes/**/*.{h,m}'
