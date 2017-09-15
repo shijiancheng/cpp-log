@@ -56,6 +56,7 @@ static bool loggerOpen = false;
     NSAssert(logConfig==NULL, @"log is already open,please close logger before it");
     [self config:cfg];
     loggerOpen = true;
+    xlogger2(toTLogLevel(LogLevelDebug), "logger", __XFILE__, __XFUNCTION__, __LINE__, "log path=%s",[logConfig.dir UTF8String]);
     OSSpinLockUnlock(&loggerLock);
 }
 
