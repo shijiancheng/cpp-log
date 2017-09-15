@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
   s.name         = "cpp-log"
-  s.version      = "0.0.2"
+  s.version      = "0.0.3"
   s.summary      = "cpp-log"
   s.description  = <<-DESC
-  cpp-log 0.0.1
+  cpp-log 0.0.3
   DESC
   s.author       = { "shadow magic" => "shadowmagic@yeah.net" }
   s.homepage     = 'https://www.wikipedia.org'
