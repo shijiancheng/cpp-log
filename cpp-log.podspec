@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.author       = { "shadow magic" => "shadowmagic@yeah.net" }
   s.homepage     = 'https://www.wikipedia.org'
   s.source       = { :git => "https://github.com/shijiancheng/cpp-log.git", :tag => s.version.to_s }
-  s.source_files = 'Classes/**/*.{h,m}'
+  s.source_files = 'Classes/**/*.{h,m,mm}'
   s.platform     = :ios, '8.0'
   s.requires_arc = true
   s.vendored_frameworks = 'mars.framework'
